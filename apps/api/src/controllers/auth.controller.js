@@ -37,7 +37,7 @@ const register = async (req, res) => {
             maxAge: REFRESH_TOKEN_EXPIRY_MS,
         });
 
-        return res.status(201).json({ accessToken });
+        return res.status(201).json({ accessToken, refreshToken });
 
     } catch (error) {
         console.error("Register error:", error);
@@ -202,7 +202,10 @@ const logout = async (req, res) => {
             sameSite: 'strict',
         });
 
-        console.error("Logout error:", error);
+        if (refreshToken) {
+            await Session.deleteOne({ refreshToken }).catch(() => { });
+        }
+
         return res.status(200).json({ message: "Logged out successfully" });
 
     } catch (error) {

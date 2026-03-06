@@ -1,9 +1,85 @@
 {
     "$schema": "https://turbo.build/schema.json",
+    "ui": "tui",
+    "globalEnv": [
+        "NODE_ENV",
+        "DATABASE_URL",
+        "CI",
+        "VERCEL_ENV",
+        "VERCEL_URL",
+        "SENTRY_DSN",
+        "SENTRY_ENVIRONMENT",
+        "LOG_LEVEL",
+        "OTEL_EXPORTER_OTLP_ENDPOINT"
+    ],
+    "globalDependencies": [
+        "tsconfig.json",
+        ".env",
+        ".env.local",
+        "pnpm-lock.yaml"
+    ],
     "tasks": {
-        "build": {},
+        "build": {
+            "dependsOn": ["^build"],
+            "inputs": ["src/**", "public/**", "tsconfig.json", "*.config.*"],
+            "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"],
+            "env": ["NEXT_PUBLIC_*", "API_URL", "PORT"]
+        },
         "dev": {
+            "cache": false,
+            "persistent": true,
+            "env": [
+                "NEXT_PUBLIC_*",
+                "API_URL",
+                "PORT",
+                "REDIS_URL",
+                "JWT_SECRET"
+            ]
+        },
+        "lint": {
+            "dependsOn": ["^lint"],
+            "inputs": ["src/**", ".eslintrc*", "eslint.config.*"],
+            "outputs": []
+        },
+        "typecheck": {
+            "dependsOn": ["^typecheck"],
+            "inputs": ["src/**", "tsconfig.json", "*.d.ts"],
+            "outputs": []
+        },
+        "test": {
+            "dependsOn": ["^build"],
+            "inputs": ["src/**", "tests/**", "__tests__/**", "*.config.*"],
+            "outputs": ["coverage/**"],
+            "env": ["TEST_DATABASE_URL", "VITEST_*", "JEST_*"]
+        },
+        "test:watch": {
+            "cache": false,
+            "persistent": true
+        },
+        "ci": {
+            "dependsOn": ["typecheck", "lint", "test"],
+            "outputs": []
+        },
+        "format": {
+            "outputs": []
+        },
+        "clean": {
             "cache": false
+        },
+        "db:migrate": {
+            "cache": false,
+            "dependsOn": ["^build"],
+            "env": ["DATABASE_URL", "DATABASE_MIGRATION_URL"]
+        },
+        "db:seed": {
+            "cache": false,
+            "dependsOn": ["db:migrate"],
+            "env": ["DATABASE_URL"]
+        },
+        "db:generate": {
+            "inputs": ["prisma/**", "drizzle/**"],
+            "outputs": ["src/generated/**", "node_modules/.prisma/**"],
+            "cache": true
         }
     }
 }

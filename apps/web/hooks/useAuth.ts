@@ -9,29 +9,49 @@ export const useAuth = () => {
     const { setAccessToken, setUser, clearAuth } = useAuthStore();
 
     const register = async (data: RegisterInput) => {
-        const res = await api.post("/auth/register", data);
-        setAccessToken(res.data.accessToken);
-        router.push("/profile");
-        toast.success("Account created successfully");
+        try {
+            const res = await api.post("/auth/register", data);
+            setAccessToken(res.data.accessToken);
+            router.push("/profile");
+            toast.success("Account created successfully");
+        } catch (error: any) {
+            const message =
+                error?.response?.data?.message || "Registration failed";
+            toast.error(message);
+        }
     };
 
     const login = async (data: LoginInput) => {
-        const res = await api.post("/auth/login", data);
-        setAccessToken(res.data.accessToken);
-        router.push("/profile");
-        toast.success("Logged in successfully");
+        try {
+            const res = await api.post("/auth/login", data);
+            setAccessToken(res.data.accessToken);
+            toast.success("Logged in successfully");
+            router.push("/profile");
+        } catch (error: any) {
+            const message =
+                error?.response?.data?.message || "Invalid email or password";
+            toast.error(message);
+        }
     };
 
     const logout = async () => {
-        await api.post("/auth/logout");
-        clearAuth();
-        router.push("/login");
-        toast.success("Logged out successfully");
+        try {
+            await api.post("/auth/logout");
+        } catch {
+        } finally {
+            clearAuth();
+            toast.success("Logged out successfully");
+            router.push("/login");
+        }
     };
 
     const fetchUser = async () => {
-        const res = await api.get("/auth/me");
-        setUser(res.data);
+        try {
+            const res = await api.get("/auth/me");
+            setUser(res.data);
+        } catch {
+            clearAuth();
+        }
     };
 
     return { register, login, logout, fetchUser };
