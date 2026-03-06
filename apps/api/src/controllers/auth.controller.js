@@ -108,7 +108,7 @@ const googleCallback = async (req, res) => {
         const accessToken = generateAccessToken(req.user._id, req.user.role);
         const refreshToken = generateRefreshToken(req.user._id);
 
-        await Session.deleteMany({ userId: req.user._id });
+        await Session.deleteMany({ userId: req.user._id, expiresAt: { $lt: new Date() } });
 
         await Session.create({
             userId: req.user._id,
@@ -121,19 +121,20 @@ const googleCallback = async (req, res) => {
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: 'lax',
             maxAge: REFRESH_TOKEN_EXPIRY_MS,
         });
 
-        return res.status(200).json({ accessToken });
+        const redirectUrl = new URL("/auth/callback", process.env.CLIENT_URL);
+        redirectUrl.searchParams.set("token", accessToken);
+
+        return res.redirect(redirectUrl.toString());
 
     } catch (error) {
         console.error("Google callback error:", error);
-        return res.status(500).json({
-            message: process.env.NODE_ENV === 'production'
-                ? "Internal server error"
-                : error.message
-        });
+        return res.redirect(
+            `${process.env.CLIENT_URL}/login?error=google_auth_failed`
+        );
     }
 }
 

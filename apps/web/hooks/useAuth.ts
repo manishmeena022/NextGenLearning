@@ -12,8 +12,8 @@ export const useAuth = () => {
         try {
             const res = await api.post("/auth/register", data);
             setAccessToken(res.data.accessToken);
-            router.push("/profile");
             toast.success("Account created successfully");
+            router.push("/profile");
         } catch (error: any) {
             const message =
                 error?.response?.data?.message || "Registration failed";
@@ -38,6 +38,7 @@ export const useAuth = () => {
         try {
             await api.post("/auth/logout");
         } catch {
+            // silent
         } finally {
             clearAuth();
             toast.success("Logged out successfully");
@@ -48,7 +49,7 @@ export const useAuth = () => {
     const fetchUser = async () => {
         try {
             const res = await api.get("/auth/me");
-            setUser(res.data);
+            setUser(res.data.user ?? res.data.data ?? res.data);
         } catch {
             clearAuth();
         }
