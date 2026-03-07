@@ -1,6 +1,6 @@
 import { verifyAccesToken } from "../utils/token.js";
 
-const authMiddleware = (req, res, next) => {
+const authenticate = (req, res, next) => {
 
     const authHeader = req.headers.authorization;
 
@@ -30,7 +30,7 @@ const authMiddleware = (req, res, next) => {
 }
 
 
-const authorize = (...roles) => {
+const requireRole = (...roles) => {
     return (req, res, next) => {
 
         if (!req.user || !roles.includes(req.user.role)) {
@@ -40,4 +40,4 @@ const authorize = (...roles) => {
     }
 }
 
-export { authMiddleware, authorize };
+export { authenticate, requireRole };
