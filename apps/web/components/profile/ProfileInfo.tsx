@@ -15,21 +15,21 @@ export default function ProfileInfo() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
-                    <Avatar className="h-16 w-16">
+                    {/* <Avatar className="h-16 w-16">
                         <AvatarFallback className="text-lg">
                             {user.name.charAt(0).toUpperCase()}
                         </AvatarFallback>
-                    </Avatar>
+                    </Avatar> */}
                     <div>
-                        <p className="font-semibold text-lg">{user.name}</p>
-                        <p className="text-muted-foreground">{user.email}</p>
+                        <p className="font-semibold text-lg">{user?.name}</p>
+                        <p className="text-muted-foreground">{user?.email}</p>
                     </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4 pt-2">
                     <div>
                         <p className="text-sm text-muted-foreground">Role</p>
                         <Badge variant="secondary" className="mt-1">
-                            {user.role}
+                            {user?.role}
                         </Badge>
                     </div>
                     <div>
@@ -37,7 +37,7 @@ export default function ProfileInfo() {
                             Provider
                         </p>
                         <Badge variant="outline" className="mt-1">
-                            {user.provider}
+                            {user?.provider}
                         </Badge>
                     </div>
                     <div>
@@ -53,9 +53,9 @@ export default function ProfileInfo() {
                             Last login
                         </p>
                         <p className="text-sm font-medium">
-                            {user.lastLoginAt
+                            {user?.lastLoginAt
                                 ? new Date(
-                                      user.lastLoginAt,
+                                      user?.lastLoginAt,
                                   ).toLocaleDateString()
                                 : "N/A"}
                         </p>

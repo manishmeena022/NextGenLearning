@@ -1,15 +1,15 @@
 import express from "express";
-import { googleCallback, login, refresh, register, logout } from "../controllers/auth.controller.js";
+import { googleCallback, login, refresh, register, logout, getCurrentUser } from "../controllers/auth.controller.js";
 import passport from "passport";
 import validate from "../middlewares/validate.js";
 import { loginSchema, registerSchema } from "../validators/auth.validator.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-const REFRESH_TOKEN_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const router = express.Router();
 
 router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
+router.get("/me", authMiddleware, getCurrentUser)
 router.post("/logout", authMiddleware, logout);
 
 router.post("/refresh", refresh)

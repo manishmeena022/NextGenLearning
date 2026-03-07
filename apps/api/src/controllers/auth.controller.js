@@ -138,6 +138,35 @@ const googleCallback = async (req, res) => {
     }
 }
 
+const getCurrentUser = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.user.userId).select("-password -__v -refreshToken");
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        if (user.isBanned) {
+            return res.status(403).json({
+                success: false,
+                message: "Account banned"
+            })
+        }
+
+        res.json({
+            success: true,
+            data: { user }
+        })
+    } catch (error) {
+        console.error("getCurrentUser error:", error);
+        res.status(500).json({ success: false, message: "Failed to fetch user" });
+    }
+}
+
 // Refresh token controller
 const refresh = async (req, res) => {
     try {
@@ -219,4 +248,4 @@ const logout = async (req, res) => {
     }
 };
 
-export { register, login, logout, refresh, googleCallback };
+export { register, login, getCurrentUser, logout, refresh, googleCallback };

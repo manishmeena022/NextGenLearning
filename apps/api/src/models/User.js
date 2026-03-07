@@ -40,6 +40,12 @@ const UserSchema = new mongoose.Schema({
         index: true,
         sparse: true,
     },
+    learningPreferences: {
+        level: String,
+        subjects: [String],
+        goal: String,
+        dailyStudyTime: Number
+    },
     isActive: {
         type: Boolean,
         default: true

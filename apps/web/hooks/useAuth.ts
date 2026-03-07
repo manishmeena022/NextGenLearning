@@ -49,9 +49,11 @@ export const useAuth = () => {
     const fetchUser = async () => {
         try {
             const res = await api.get("/auth/me");
-            setUser(res.data.user ?? res.data.data ?? res.data);
+
+            setUser(res.data.data.user);
         } catch {
             clearAuth();
+            // clearCookie("userRole");
         }
     };
 

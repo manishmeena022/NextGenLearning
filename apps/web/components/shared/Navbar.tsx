@@ -18,13 +18,13 @@ export default function Navbar() {
                 <div className="flex items-center gap-4">
                     {user && (
                         <>
-                            <Avatar className="h-8 w-8">
+                            {/* <Avatar className="h-8 w-8">
                                 <AvatarFallback>
-                                    {user.name.charAt(0).toUpperCase()}
+                                    {user?.name?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
-                            </Avatar>
+                            </Avatar> */}
                             <span className="text-sm text-muted-foreground">
-                                {user.name}
+                                {user?.name}
                             </span>
                         </>
                     )}
