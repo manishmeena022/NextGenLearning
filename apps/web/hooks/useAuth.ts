@@ -49,8 +49,12 @@ export const useAuth = () => {
     const fetchUser = async () => {
         try {
             const res = await api.get("/auth/me");
+            const user = res.data.data.user;
+            setUser(user);
 
-            setUser(res.data.data.user);
+            if (!user.isOnboarded) {
+                router.push("/onboarding");
+            }
         } catch {
             clearAuth();
             // clearCookie("userRole");

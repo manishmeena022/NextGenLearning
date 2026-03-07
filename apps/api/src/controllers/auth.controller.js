@@ -2,6 +2,7 @@ import User from "../models/User.js";
 import bcrypt from 'bcrypt';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken } from "../utils/token.js";
 import Session from "../models/Session.js";
+import { success } from "zod";
 
 const REFRESH_TOKEN_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
@@ -103,6 +104,7 @@ const login = async (req, res) => {
     }
 };
 
+// Google callback
 const googleCallback = async (req, res) => {
     try {
         const accessToken = generateAccessToken(req.user._id, req.user.role);
@@ -138,6 +140,7 @@ const googleCallback = async (req, res) => {
     }
 }
 
+// Get current User
 const getCurrentUser = async (req, res) => {
     try {
 
@@ -164,6 +167,46 @@ const getCurrentUser = async (req, res) => {
     } catch (error) {
         console.error("getCurrentUser error:", error);
         res.status(500).json({ success: false, message: "Failed to fetch user" });
+    }
+}
+
+const updateProfile = async (req, res) => {
+    try {
+        const { goal, level, subjects, dailyStudyTime } = req.body;
+
+        const user = await User.findByIdAndUpdate(
+            req.user.userId,
+            {
+                learningPreferences: {
+                    goal,
+                    level,
+                    subjects,
+                    dailyStudyTime: Number(dailyStudyTime),
+                },
+                isOnboarded: true,
+                onboardedAt: new Date(),
+            },
+            {
+                new: true,
+                select: "-password -__v",
+            }
+        )
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            })
+        }
+
+        res.json({
+            success: true,
+            message: "Profile updated Successfully",
+            data: { user }
+        });
+    } catch (error) {
+        console.error("updateProfile error:", error);
+        res.status(500).json({ success: false, message: "Failed to update profile" });
     }
 }
 
@@ -248,4 +291,4 @@ const logout = async (req, res) => {
     }
 };
 
-export { register, login, getCurrentUser, logout, refresh, googleCallback };
+export { register, login, getCurrentUser, updateProfile, logout, refresh, googleCallback };

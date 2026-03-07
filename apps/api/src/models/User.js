@@ -40,11 +40,28 @@ const UserSchema = new mongoose.Schema({
         index: true,
         sparse: true,
     },
+    isOnboarded: {
+        type: Boolean,
+        default: false
+    },
+    onboardedAt: {
+        type: Date,
+        default: null
+    },
     learningPreferences: {
-        level: String,
-        subjects: [String],
-        goal: String,
-        dailyStudyTime: Number
+        goal: {
+            type: String
+        },
+        level: {
+            type: String,
+            enum: ["beginner", "intermediate", "advanced"]
+        },
+        subjects: [{
+            type: String
+        }],
+        dailyStudyTime: {
+            type: Number
+        }
     },
     isActive: {
         type: Boolean,

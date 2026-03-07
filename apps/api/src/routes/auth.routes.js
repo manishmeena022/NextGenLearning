@@ -1,8 +1,8 @@
 import express from "express";
-import { googleCallback, login, refresh, register, logout, getCurrentUser } from "../controllers/auth.controller.js";
+import { googleCallback, login, refresh, register, logout, getCurrentUser, updateProfile } from "../controllers/auth.controller.js";
 import passport from "passport";
 import validate from "../middlewares/validate.js";
-import { loginSchema, registerSchema } from "../validators/auth.validator.js";
+import { loginSchema, onBoardingSchema, registerSchema } from "../validators/auth.validator.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -10,6 +10,7 @@ const router = express.Router();
 router.post("/register", validate(registerSchema), register);
 router.post("/login", validate(loginSchema), login);
 router.get("/me", authMiddleware, getCurrentUser)
+router.put("/onboarding", authMiddleware, validate(onBoardingSchema), updateProfile)
 router.post("/logout", authMiddleware, logout);
 
 router.post("/refresh", refresh)

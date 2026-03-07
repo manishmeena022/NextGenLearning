@@ -3,12 +3,17 @@ export interface User {
     name: string;
     email: string;
     role: string;
-    provider: "local" | "google";
-    isActive: boolean;
-    lastLoginAt: string | null;
+    provider: string;
     createdAt: string;
+    lastLoginAt: string | null;
+    isOnboarded: boolean;
+    learningPreferences?: {
+        goal: string;
+        level: "beginner" | "intermediate" | "advanced";
+        subjects: string[];
+        dailyStudyTime: number;
+    };
 }
-
 export interface Session {
     _id: string;
     userAgent: string | null;
