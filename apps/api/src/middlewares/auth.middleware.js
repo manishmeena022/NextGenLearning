@@ -3,6 +3,7 @@ import { verifyAccesToken } from "../utils/token.js";
 const authenticate = (req, res, next) => {
 
     const authHeader = req.headers.authorization;
+    console.log("Auth Header", authHeader)
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -32,10 +33,13 @@ const authenticate = (req, res, next) => {
 
 const requireRole = (...roles) => {
     return (req, res, next) => {
-
+        console.log("USERRR", req.user)
         if (!req.user || !roles.includes(req.user.role)) {
             return res.status(403).json({ message: "Forbidden" });
         }
+
+        console.log("ROLE", req.user.role)
+
         next();
     }
 }
