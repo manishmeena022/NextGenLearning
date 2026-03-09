@@ -28,8 +28,6 @@ export default function LoginPage() {
 
             const json = await res.json();
 
-            console.log("JSON :", json);
-
             if (!res.ok) {
                 toast.error(json.message ?? "Login failed");
                 return;

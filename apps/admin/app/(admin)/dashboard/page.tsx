@@ -23,7 +23,6 @@ export default function DashboardPage() {
     if (isLoading)
         return <p style={{ color: "var(--color-text-3)" }}>Loading…</p>;
 
-    console.log("DaTA", data);
     const { stats, charts } = data?.data;
 
     return (
